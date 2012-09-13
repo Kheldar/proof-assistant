@@ -1,5 +1,5 @@
 package syntax;
 
-public class Connective extends LogicalSymbol {
+public abstract class Connective extends LogicalSymbol {
 
 }
