@@ -1,5 +1,9 @@
 package naturalDeduction;
 
-public class ImpliesE extends Deduction {
+import syntax.Formula;
 
+public class ImpliesE extends Deduction {
+	public ImpliesE(Formula formula) {
+		super(formula);
+	}
 }

@@ -2,8 +2,8 @@ package naturalDeduction;
 
 import syntax.Formula;
 
-public class OrI2 extends Deduction {
-	public OrI2(Formula formula) {
+public class AndE1 extends Deduction {
+	public AndE1(Formula formula) {
 		super(formula);
 	}
 }
