@@ -1,5 +1,5 @@
 package naturalDeduction;
 
-public class OrI2 extends DeductionRule {
+public class OrI2 extends Deduction {
 
 }
