@@ -1,10 +1,8 @@
 package syntax;
 
-public class Equivalence extends Connective {
-	static final Integer nary = 2;
+public class Equivalence extends BinaryConnective {
 	
 	public Equivalence(Formula left, Formula right) {
-		subFormulas.add(left);
-		subFormulas.add(right);
+		super(left, right);
 	}
 }

@@ -1,10 +1,9 @@
 package syntax;
 
-public class Implies extends Connective {
+public class Implies extends BinaryConnective {
 	static final Integer nary = 2;
 	
 	public Implies(Formula left, Formula right) {
-		subFormulas.add(left);
-		subFormulas.add(right);
+		super(left, right);
 	}
 }

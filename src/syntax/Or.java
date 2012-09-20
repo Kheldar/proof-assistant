@@ -1,10 +1,9 @@
 package syntax;
 
-public class Or extends Connective {
+public class Or extends BinaryConnective {
 	static final Integer nary = 2;
 	
 	public Or(Formula left, Formula right) {
-		subFormulas.add(left);
-		subFormulas.add(right);
+		super(left, right);
 	}
 }
