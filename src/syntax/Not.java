@@ -6,4 +6,8 @@ public class Not extends Connective {
 	public Not(Formula sub) {
 		subFormulas.add(sub);
 	}
+	
+	public Formula subFormula() {
+		return subFormulas.get(0);
+	}
 }
