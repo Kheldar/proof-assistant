@@ -21,5 +21,4 @@ public class NotI extends Deduction {
 		list.add(pToNeg);
 		return list;
 	}
-	
 }

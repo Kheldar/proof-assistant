@@ -13,4 +13,9 @@ public class Predicate extends Formula {
 		this.terms = new ArrayList<Term>(this.nary);
 		this.terms.addAll(terms);
 	}
+	
+	public Predicate() {
+		this.nary = 0;
+		this.terms = null;
+	}
 }

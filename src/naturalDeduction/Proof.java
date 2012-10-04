@@ -1,10 +1,26 @@
 package naturalDeduction;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
-// Not currently in use.
-public class Proof {
-	ArrayList<Assumption> assumptions = new ArrayList<Assumption>();
+
+public class Proof extends Theorem {
+	private Theorem parent;
+		
+	public Proof(Assumption a, Theorem parent) {
+		super(a);
+		this.parent = parent;
+		parent.subproofs.add(this);
+	}
 	
-	ArrayList<Deduction> deductions = new ArrayList<Deduction>();
+	public Collection<Deduction> getDeductions() {
+		ArrayList<Deduction> ret = new ArrayList<Deduction>();
+		ret.addAll(deductions);
+		ret.addAll(parent.getDeductions());
+		return ret;
+	}
+	
+	public Theorem getParent() {
+		return parent;
+	}
 }

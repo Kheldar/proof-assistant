@@ -4,6 +4,10 @@ import syntax.Formula;
 
 public class AndE2 extends AndEs {
 	
+	static {
+		forwardRules.add(AndE2.class);
+	}
+	
 	public AndE2(Deduction from) throws FormulaMismatch {
 		super(logicalConsequence(from), from);
 	}

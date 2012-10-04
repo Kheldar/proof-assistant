@@ -10,4 +10,8 @@ public class Not extends Connective {
 	public Formula subFormula() {
 		return subFormulas.get(0);
 	}
+	
+	protected Integer nary() {
+		return nary;
+	}
 }

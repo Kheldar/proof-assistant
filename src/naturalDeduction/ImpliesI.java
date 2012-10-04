@@ -5,9 +5,14 @@ import syntax.Formula;
 import syntax.Implies;
 
 public class ImpliesI extends Deduction {
+	
 	public ImpliesI(Assumption p, Deduction pToQ) {
 		super(logicalConsequence(p, pToQ), fromsToList(p, pToQ));
 	}
+	
+//	public ImpliesI(Proof p) {
+//		super(logicalConsequence(p.assumption, p.result()));
+//	}
 	
 	public static final Formula logicalConsequence(Assumption p, Deduction pToQ) {
 		//TODO: Check that 'p' is a leaf-node in the deduction chain 'pToQ'.

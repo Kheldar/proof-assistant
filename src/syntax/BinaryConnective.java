@@ -1,6 +1,6 @@
 package syntax;
 
-public class BinaryConnective extends Connective {
+public abstract class BinaryConnective extends Connective {
 	static final Integer nary = 2;
 	
 	public BinaryConnective(Formula left, Formula right) {
@@ -14,5 +14,9 @@ public class BinaryConnective extends Connective {
 	
 	public Formula right() {
 		return this.subFormulas.get(1);
+	}
+	
+	protected Integer nary() {
+		return nary;
 	}
 }
