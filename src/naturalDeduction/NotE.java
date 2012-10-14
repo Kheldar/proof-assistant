@@ -5,18 +5,19 @@ import java.util.ArrayList;
 import syntax.Formula;
 import syntax.Not;
 
-//Possibly equiv to Double-Negation Elimination? Need to check this.
+//Should be:
+//[~p] .. F | p
 public class NotE extends Deduction {
 	
 	protected static final Class<Not> formulaClass = Not.class;
 	
-	public NotE(Deduction notP) throws FormulaMismatch  {
+	public NotE(Formula notP) throws FormulaMismatch  {
 		super(logicalConsequence(notP), fromToList(notP));
 	}
 	
-	public static final Formula logicalConsequence(Deduction notP) throws FormulaMismatch {
-		if(NotE.checkType(notP.formula)) {
-			Not notnot = formulaClass.cast(notP.formula);
+	public static final Formula logicalConsequence(Formula notP) throws FormulaMismatch {
+		if(NotE.checkType(notP)) {
+			Not notnot = formulaClass.cast(notP);
 			Not not = (Not) notnot.subFormula();
 			return not.subFormula();
 		} else {
@@ -35,8 +36,8 @@ public class NotE extends Deduction {
 		return false;
 	}
 	
-	private static ArrayList<Deduction> fromToList(Deduction notPToNeg) {
-		ArrayList<Deduction> list = new ArrayList<Deduction>();
+	private static ArrayList<Formula> fromToList(Formula notPToNeg) {
+		ArrayList<Formula> list = new ArrayList<Formula>();
 		list.add(notPToNeg);
 		return list;
 	}

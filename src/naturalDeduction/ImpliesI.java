@@ -1,28 +1,33 @@
 package naturalDeduction;
-import java.util.ArrayList;
-
 import syntax.Formula;
 import syntax.Implies;
+import syntax.LogicalSymbol;
 
-public class ImpliesI extends Deduction {
+public class ImpliesI extends BackwardRule {
 	
-	public ImpliesI(Assumption p, Deduction pToQ) {
-		super(logicalConsequence(p, pToQ), fromsToList(p, pToQ));
+	protected static final Class<Implies> formulaClass = Implies.class;
+	
+	public ImpliesI(Proof p) {
+		super(logicalConsequence(p), p);
 	}
 	
-//	public ImpliesI(Proof p) {
-//		super(logicalConsequence(p.assumption, p.result()));
-//	}
-	
-	public static final Formula logicalConsequence(Assumption p, Deduction pToQ) {
+	public static final Formula logicalConsequence(Proof p) {
 		//TODO: Check that 'p' is a leaf-node in the deduction chain 'pToQ'.
-		return new Implies(p.formula, pToQ.formula);
+		return new Implies(p.assumption.formula, p.endGoal);
 	}
 	
-	private static ArrayList<Deduction> fromsToList(Assumption p, Deduction pToQ) {
-		ArrayList<Deduction> list = new ArrayList<Deduction>();
-		list.add(p);
-		list.add(pToQ);
-		return list;
+	public static Class<? extends LogicalSymbol> formulaClass() {
+		return formulaClass;
+	}
+	
+	public static Goal applyBackwards(Formula conclusion, Theorem t) throws FormulaMismatch {
+		if(formulaClass.isInstance(conclusion)) {
+			Goal ret = new Goal();
+			Implies i = (Implies) conclusion;
+			ret.proofGoal = new Proof(i.right(), new Assumption(i.left()), t);
+			return ret;
+		} else {
+			throw new FormulaMismatch();
+		}
 	}
 }

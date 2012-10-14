@@ -10,17 +10,17 @@ public abstract class AndEs extends ForwardRule {
 
 	protected static final Class<And> formulaClass = And.class;
 	
-	public AndEs(Formula formula, Deduction from) {
+	public AndEs(Formula formula, Formula from) {
 		super(formula, fromToList(from));
 	}
 	
-	private static ArrayList<Deduction> fromToList(Deduction from) {
-		ArrayList<Deduction> list = new ArrayList<Deduction>();
+	private static ArrayList<Formula> fromToList(Formula from) {
+		ArrayList<Formula> list = new ArrayList<Formula>();
 		list.add(from);
 		return list;
 	}
 	
-	public final Deduction from() {
+	public final Formula from() {
 		return froms.get(0);
 	}
 	

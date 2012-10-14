@@ -14,4 +14,10 @@ public class Not extends Connective {
 	protected Integer nary() {
 		return nary;
 	}
+	
+	@Override
+	public int compareTo(Formula o) {
+		// TODO Auto-generated method stub
+		return 5;
+	}
 }

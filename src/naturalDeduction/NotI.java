@@ -7,17 +7,17 @@ import syntax.Not;
 
 public class NotI extends Deduction {
 	
-	public NotI(Assumption p, Deduction pToNeg) {
+	public NotI(Formula p, Formula pToNeg) {
 		super(logicalConsequence(p, pToNeg), fromToList(pToNeg));
 	}
 	
-	public static final Formula logicalConsequence(Assumption p, Deduction pToNeg) {
+	public static final Formula logicalConsequence(Formula p, Formula pToNeg) {
 		//TODO: Check pToNeg is correct.
-		return new Not(p.formula);
+		return new Not(p);
 	}
 	
-	private static ArrayList<Deduction> fromToList(Deduction pToNeg) {
-		ArrayList<Deduction> list = new ArrayList<Deduction>();
+	private static ArrayList<Formula> fromToList(Formula pToNeg) {
+		ArrayList<Formula> list = new ArrayList<Formula>();
 		list.add(pToNeg);
 		return list;
 	}

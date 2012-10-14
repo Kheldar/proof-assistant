@@ -9,4 +9,8 @@ public class Assumption extends Deduction {
 		correct = true;
 		complete = true;
 	}
+	
+	protected int priority() {
+		return 0;
+	}
 }

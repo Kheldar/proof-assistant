@@ -1,5 +1,13 @@
 package syntax;
+import java.util.ArrayList;
 
-public class Formula {
+import naturalDeduction.Deduction;
+
+public abstract class Formula implements Comparable<Formula> {
 	//TODO: Implement 'equals()'
+	
+	public abstract int compareTo(Formula o);
+	
+	public Deduction from = null;
+	public ArrayList<Deduction> possibleFroms = new ArrayList<Deduction>();
 }

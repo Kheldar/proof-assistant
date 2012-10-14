@@ -1,25 +1,26 @@
 package naturalDeduction;
 
 import java.util.ArrayList;
- 
-public class Direct extends Deduction {
 
-	public Direct(Deduction from) {
-		super(from.formula, fromToList(from));
+import syntax.Formula;
+ 
+public class Direct extends BackwardRule {
+
+	public Direct(Formula from) {
+		super(from, fromToList(from));
 	}
 	
-	private static ArrayList<Deduction> fromToList(Deduction from) {
-		ArrayList<Deduction> list = new ArrayList<Deduction>();
+	private static ArrayList<Formula> fromToList(Formula from) {
+		ArrayList<Formula> list = new ArrayList<Formula>();
 		list.add(from);
 		return list;
 	}
 	
-	public final Deduction from() {
+	public final Formula from() {
 		return froms.get(0);
 	}
 	
 	public static Boolean hasCheck() {
-		//TODO: ???
 		return false;
 	}
 }

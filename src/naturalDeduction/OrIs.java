@@ -2,18 +2,19 @@ package naturalDeduction;
 
 import java.util.ArrayList;
 
-import syntax.And;
 import syntax.Formula;
+import syntax.LogicalSymbol;
+import syntax.Or;
 
 public abstract class OrIs extends BackwardRule {
 
-	protected static final Class<And> formulaClass = And.class;
+	protected static final Class<Or> formulaClass = Or.class;
 	
-	public OrIs(Formula formula, ArrayList<Deduction> froms) {
+	public OrIs(Formula formula, ArrayList<Formula> froms) {
 		super(formula, froms);
 	}
 
-	public OrIs(Formula formula, Deduction from) {
+	public OrIs(Formula formula, Formula from) {
 		super(formula, from);
 	}
 
@@ -22,10 +23,17 @@ public abstract class OrIs extends BackwardRule {
 		this.newGoals = g;
 	}
 	
-	protected static ArrayList<Deduction> fromToList(Deduction from) {
-		ArrayList<Deduction> list = new ArrayList<Deduction>();
+	public OrIs(Formula consequence) {
+		super(consequence);
+	}
+	
+	protected static ArrayList<Formula> fromToList(Formula from) {
+		ArrayList<Formula> list = new ArrayList<Formula>();
 		list.add(from);
 		return list;
 	}
-
+	
+	public static final Class<? extends LogicalSymbol> formulaClass() {
+		return formulaClass;
+	}
 }

@@ -5,28 +5,28 @@ import java.util.ArrayList;
 import syntax.And;
 import syntax.Formula;
 
-public class AndI extends Deduction {
+public class AndI extends BackwardRule {
 	
-	public AndI(Deduction from1, Deduction from2) {
+	public AndI(Formula from1, Formula from2) {
 		super(logicalConsequence(from1, from2), fromsToList(from1, from2));
 	}
 	
-	public static Formula logicalConsequence(Deduction from1, Deduction from2) {
-		return new And(from1.formula, from2.formula);
+	public static Formula logicalConsequence(Formula from1, Formula from2) {
+		return new And(from1, from2);
 	}
 	
-	private static ArrayList<Deduction> fromsToList(Deduction from1, Deduction from2) {
-		ArrayList<Deduction> list = new ArrayList<Deduction>();
+	private static ArrayList<Formula> fromsToList(Formula from1,Formula from2) {
+		ArrayList<Formula> list = new ArrayList<Formula>();
 		list.add(from1);
 		list.add(from2);
 		return list;
 	}
 	
-	public final Deduction fromLeft() {
+	public final Formula fromLeft() {
 		return froms.get(0);
 	}
 	
-	public final Deduction fromRight() {
+	public final Formula fromRight() {
 		return froms.get(1);
 	}
 }
