@@ -1,27 +1,25 @@
 package naturalDeduction;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import syntax.Formula;
 
 public abstract class ForwardRule extends Deduction {
 	
-	public static Set<Class<? extends ForwardRule>> forwardRules = new HashSet<Class<? extends ForwardRule>>();
+	protected static Set<Class<? extends ForwardRule>> forwardRules = new HashSet<Class<? extends ForwardRule>>();
 	
-	//public abstract Class<? extends LogicalSymbol> formulaClass();
-	
-	public ForwardRule(Formula formula, ArrayList<Formula> froms) {
-		super(formula, froms);
+	public ForwardRule(Formula consequent, List<Formula> premises) {
+		super(consequent, premises);
 	}
 	
-	public ForwardRule(Formula formula, Formula from) {
-		super(formula, from);
+	public ForwardRule(Formula consequent) {
+		super(consequent);
 	}
-	
-	public ForwardRule(Formula formula) {
-		super(formula);
+
+	public static void register(Class<? extends ForwardRule> rule) {
+		forwardRules.add(rule);
 	}
 	
 	// Would be better if we could do this reflectively.

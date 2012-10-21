@@ -12,20 +12,12 @@ public abstract class BackwardRule extends Deduction {
 	
 	public Goal newGoals = new Goal(); 
 	
-	public BackwardRule(Formula formula, ArrayList<Formula> froms) {
-		super(formula, froms);
+	public BackwardRule(Formula consequence) {
+		super(consequence);
 	}
 	
-	public BackwardRule(Formula formula, Formula from) {
-		super(formula, from);
-	}
-	
-	public BackwardRule(Formula formula) {
-		super(formula);
-	}
-	
-	public BackwardRule(Formula formula, Proof p) {
-		super(formula, p);
+	public BackwardRule(Formula formula, Proof premise) {
+		super(formula, premise);
 	}
 	
 	// Would be better if we could do this reflectively.
@@ -45,5 +37,6 @@ public abstract class BackwardRule extends Deduction {
 	public static class Goal {
 		public ArrayList<Formula> directGoals = new ArrayList<Formula>();
 		public Proof proofGoal = null;
+		public Class<? extends BackwardRule> rule;
 	}
 }

@@ -1,80 +1,62 @@
 package naturalDeduction;
 
-
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.Stack;
 
 import naturalDeduction.BackwardRule.Goal;
 import syntax.Formula;
 import syntax.Implies;
 import tools.Reflection;
+import tools.RemoveListDuplicates;
 
 public class Theorem {
 
 	public Assumption assumption;
-	protected ArrayList<Deduction> deductions = new ArrayList<Deduction>();
 	protected HashSet<Formula> known = new HashSet<Formula>();
 	public ArrayList<Proof> subproofs = new ArrayList<Proof>();
 	public PriorityQueue<Formula> goals = new PriorityQueue<Formula>();
-	public final Formula endGoal;
+	public Stack<Formula> incompleteGoals = new Stack<Formula>();
+	public Formula endGoal;
 	
-	Boolean proven = false;
+	public Boolean proven = false;
 	Boolean needsForward = false;
 	
 	public Theorem(Formula toProve) {
 		this.endGoal = toProve;
 		goals.add(toProve);
+		
+		//TODO: If we already have toProve, add Direct deduction. BUT: Do not check 'inKnowledge'. It may not exist properly at this point.
 	}
 	
 	public Theorem(Formula toProve, Assumption a) {
 		this(toProve);
 		this.assumption = a;
-		deductions.add(a);
-		known.add(a.formula);
+		known.add(a.consequent);
 		needsForward = true;
 	}
 	
-	public void add(Deduction d) {
-		if(!inKnowledge(d.formula)) {
-			deductions.add(d);
-			known.add(d.formula);
-			newDeduction(d.formula);
-			if(d.formula.equals(endGoal)) {
-				proven = true;
-			} else {
-				needsForward = true;
-			}
+	public void add(Formula f) {
+		if(f.equals(endGoal)) {
+			known.add(f);
+			proven = true;
+			//Need to set this to a formula we've been working with, so we can backtrack.
+			this.endGoal = f;
+			needsForward = false;
+		} else if(!inKnowledge(f)) {
+			known.add(f);
+			newDeduction(f);			
+			needsForward = true;
 		}
-	}
-	
-	public void addAll(Collection<Deduction> c) {
-		deductions.addAll(c);
-		for(Deduction d : c) {
-			known.add(d.formula);
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public Collection<Deduction> getDeductions() {
-		return (Collection<Deduction>) deductions.clone();
 	}
 	
 	@SuppressWarnings("unchecked")
 	public Collection<Formula> getKnowledge() {
 		return (Collection<Formula>) known.clone();
-	}
-	
-	public Deduction inDeductions(Formula f) {
-		if(inKnowledge(f)) {
-			for(Deduction d : deductions) {
-				if(d.formula.equals(f)) {
-					return d;
-				}
-			}
-		}
-		return null;
 	}
 	
 	public Boolean inKnowledge(Formula f) {
@@ -85,21 +67,45 @@ public class Theorem {
 		return getKnowledge().containsAll(c);
 	}
 	
-	public Boolean noDeductions() {
-		return deductions.isEmpty();
-	}
-	
-	public Integer numDeductions() {
-		return deductions.size();
-	}
-	
 	public String toString() {
-		return known.toString() + (subproofs.isEmpty()? "" : "\n\t" + subproofs.toString());
+		String s = known.toString() + "\n";
+		if(!subproofs.isEmpty()) {
+			for(Proof p : subproofs) {
+				s = s+p.toString();
+			}
+		}
+		return s;
+	}
+	
+	protected Integer depth() {
+		return 0;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public String constructProof() {
+		String s = "";
+		ArrayList<Deduction> ds = new ArrayList<Deduction>();
+		ds.addAll(endGoal.deductionList());
+		Collections.reverse(ds);
+		ds = (ArrayList<Deduction>) RemoveListDuplicates.removeDuplicates(ds);
+
+		Integer i = 0;
+		for(Deduction d : ds) {
+			s = s + i.toString() + "\t| " + d.toString() + "\n";
+			if(d.getClass().equals(Assumption.class)) {
+				s = s + "\t|--------------------\n";
+			}
+			i++;
+		}
+		
+		return s;
 	}
 	
 	public void run() {
-		forward();
-		backward();
+		if(!proven) {
+			forward();
+			backward();
+		}
 	}
 	
 	public void forward() {
@@ -113,6 +119,8 @@ public class Theorem {
 			i++;
 		}
 		
+		checkOldGoals();
+		
 		if(needsForward) {
 			needsForward = false;
 			forward();
@@ -123,13 +131,17 @@ public class Theorem {
 		while(!goals.isEmpty()) {
 			Formula f = goals.poll();
 			newGoal(f);
+			if(needsForward) {
+				forward();
+			}
 		}
 	}
 	
 	public void newGoal(Formula current) {
 		for(Class<? extends BackwardRule> rule : BackwardRule.backwardRules()) {
 			try {
-				if(Reflection.formulaClass(rule).equals(current.getClass())) {
+				if(Reflection.formulaClass(rule).equals(current.getClass()) 
+						|| Reflection.formulaClass(rule).equals(Formula.class)) {
 					//Create a new instance of the rule.
 					Goal g = Reflection.applyBackwards(rule, current, this);
 					
@@ -141,21 +153,22 @@ public class Theorem {
 							//they need to be the same object.
 							//Thankfully, newGoals.directGoals is relatively small.
 							
-							for(Formula known : getKnowledge()) {
-								for(Formula goal : deduction.newGoals.directGoals) {
-									if(goal.equals(known)) {
-										deduction.froms.add(known);
+							for(Formula know : getKnowledge()) {
+								for(Formula goal : g.directGoals) {
+									if(goal.equals(know)) {
+										deduction.addPremise(know);
 									}
 								}
 							}
-							add(deduction);
+							add(deduction.consequent);
 						} else {
 							for(Formula f : g.directGoals) {
-								if(!inKnowledge(f) && goals.contains(f)) {
+								if(!inKnowledge(f) && !goals.contains(f)) {
 									goals.add(f);
 								}
 							}
-							//current.possibleFroms.add(deduction);
+							current.possibleGoals.add(g);
+							incompleteGoals.add(current);
 						}
 					} else if (g.proofGoal != null) {
 						g.proofGoal.run();
@@ -163,12 +176,12 @@ public class Theorem {
 							//TODO: Relectivise this.
 							if(Reflection.formulaClass(rule).equals(Implies.class)) {
 								BackwardRule deduction = rule.getConstructor(Proof.class).newInstance(g.proofGoal);
-								add(deduction);
-							} else if(false) {
-								//TODO: False goal;
+								add(deduction.consequent);
+							} else if(Reflection.formulaClass(rule).equals(Implies.class)) {
+								
 							}
 						} else {
-							//TODO: ???
+							//TODO: Failure detection, etc.
 						}
 					}
 				}
@@ -176,6 +189,43 @@ public class Theorem {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void checkOldGoals() {
+		Stack<Formula> temp = new Stack<Formula>();
+		Formula f;
+		while(!incompleteGoals.empty()) {
+			f = incompleteGoals.pop();
+			Boolean clear = false;
+			for(Goal g : f.possibleGoals) {
+				if(inKnowledge(g.directGoals)) {
+					clear = true;
+					try {
+						Deduction d = g.rule.getConstructor(Formula.class).newInstance(f);
+						for(Formula know : getKnowledge()) {
+							for(Formula premise : g.directGoals) {
+								if(premise.equals(know)) {
+									d.addPremise(know);
+								}
+							}
+						}
+						add(d.consequent);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			
+			if(clear) {
+				f.possibleGoals.clear();
+			} else {
+				temp.push(f);
+			}
+		}
+		
+		incompleteGoals = temp;
+		
+		//TODO: Proof goals?
 	}
 	
 	public void newDeduction(Formula proven) {
@@ -188,12 +238,16 @@ public class Theorem {
 						//Check that we meet the requirements. (And return the requirements).
 						Formula f = Reflection.check(rule, proven, getKnowledge());
 						if(f != null) {
-							Deduction d = rule.cast(rule.getConstructor(Formula.class, Formula.class).newInstance(f, proven));
-							add(d);
+							List<Formula> input = new ArrayList<Formula>();
+							input.add(proven);
+							Deduction d = rule.cast(rule.getConstructor(List.class).newInstance(input));
+							add(d.consequent);
 						}
 					} else {
-						Deduction d = rule.cast(rule.getConstructor(Formula.class).newInstance(proven));
-						add(d);
+						List<Formula> input = new ArrayList<Formula>();
+						input.add(proven);
+						Deduction d = rule.cast(rule.getConstructor(List.class).newInstance(input));
+						add(d.consequent);
 					}
 				}
 			} catch (Exception e) {

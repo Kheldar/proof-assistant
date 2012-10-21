@@ -9,14 +9,6 @@ import syntax.Or;
 public abstract class OrIs extends BackwardRule {
 
 	protected static final Class<Or> formulaClass = Or.class;
-	
-	public OrIs(Formula formula, ArrayList<Formula> froms) {
-		super(formula, froms);
-	}
-
-	public OrIs(Formula formula, Formula from) {
-		super(formula, from);
-	}
 
 	public OrIs(Formula conclusion, Goal g) {
 		super(conclusion);

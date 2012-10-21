@@ -1,9 +1,7 @@
 package naturalDeduction;
 
-import java.util.ArrayList;
-
+import java.util.List;
 import java.util.Collection;
-
 import syntax.Implies;
 import syntax.Formula;
 import syntax.LogicalSymbol;
@@ -12,23 +10,35 @@ public class ImpliesE extends ForwardRule {
 	
 	protected static final Class<Implies> formulaClass = Implies.class;
 	
-	public ImpliesE(Formula p, Formula pIq) throws FormulaMismatch {
-		super(logicalConsequence(pIq), fromsToList(p, pIq));
+	public ImpliesE(List<Formula> premises) throws BadPremises {
+		super(applyForward(premises), premises);
 	}
 	
-	public static final Formula logicalConsequence(Formula pIq) throws FormulaMismatch {
-		if(formulaClass.isInstance(pIq)) {
-			return formulaClass.cast(pIq).right();
+	public static Formula applyForward(List<Formula> premises) throws BadPremises {
+		if(premises.size() != 2) {
+			throw new BadPremises();
 		} else {
-			throw new FormulaMismatch();
+			Formula a = premises.get(0);
+			Formula b = premises.get(1);
+			Implies pIq;
+			Formula p;
+			
+			if(a.getClass().equals(Implies.class)) {
+				pIq = (Implies) a;
+				p = b;
+			} else if(b.getClass().equals(Implies.class)) {
+				pIq = (Implies) b;
+				p = a;
+			} else {
+				throw new BadPremises();
+			}
+			
+			if(pIq.left().equals(p)) {
+				return pIq.right();
+			} else {
+				throw new BadPremises();
+			}
 		}
-	}
-	
-	private static ArrayList<Formula> fromsToList(Formula p, Formula pIq) {
-		ArrayList<Formula> list = new ArrayList<Formula>();
-		list.add(p);
-		list.add(pIq);
-		return list;
 	}
 	
 	public static Boolean hasCheck() {

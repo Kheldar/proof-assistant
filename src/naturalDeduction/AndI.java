@@ -1,32 +1,40 @@
 package naturalDeduction;
 
-import java.util.ArrayList;
-
+import java.util.List;
 import syntax.And;
 import syntax.Formula;
+import syntax.LogicalSymbol;
 
 public class AndI extends BackwardRule {
 	
-	public AndI(Formula from1, Formula from2) {
-		super(logicalConsequence(from1, from2), fromsToList(from1, from2));
+	protected static final Class<And> formulaClass = And.class;
+	
+	public AndI(Formula consequent) {
+		super(consequent);
 	}
 	
-	public static Formula logicalConsequence(Formula from1, Formula from2) {
-		return new And(from1, from2);
+	public static Formula applyForward(List<Formula> premises) throws BadPremises {
+		if(premises.size() != 2) {
+			throw new BadPremises();
+		} else {
+			return new And(premises.get(0), premises.get(1));
+		}
 	}
 	
-	private static ArrayList<Formula> fromsToList(Formula from1,Formula from2) {
-		ArrayList<Formula> list = new ArrayList<Formula>();
-		list.add(from1);
-		list.add(from2);
-		return list;
+	public static Goal applyBackwards(Formula conclusion, Theorem t) throws FormulaMismatch {
+		if(formulaClass.isInstance(conclusion)) {
+			Goal ret = new Goal();
+			And a = (And) conclusion;
+			ret.directGoals.add(a.left());
+			ret.directGoals.add(a.right());
+			ret.rule = AndI.class;
+			return ret;
+		} else {
+			throw new FormulaMismatch();
+		}
 	}
 	
-	public final Formula fromLeft() {
-		return froms.get(0);
-	}
-	
-	public final Formula fromRight() {
-		return froms.get(1);
+	public static final Class<? extends LogicalSymbol> formulaClass() {
+		return formulaClass;
 	}
 }

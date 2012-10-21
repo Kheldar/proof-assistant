@@ -6,13 +6,16 @@ import java.util.Collection;
 import syntax.Formula;
 import naturalDeduction.AndE1;
 import naturalDeduction.AndE2;
+import naturalDeduction.AndI;
 import naturalDeduction.BackwardRule;
 import naturalDeduction.BackwardRule.Goal;
 import naturalDeduction.Deduction;
+import naturalDeduction.Direct;
 import naturalDeduction.ForwardRule;
 import naturalDeduction.ImpliesE;
 import naturalDeduction.ImpliesI;
 import naturalDeduction.OrI1;
+import naturalDeduction.OrI2;
 import naturalDeduction.Theorem;
 
 public class Reflection {
@@ -46,17 +49,20 @@ public class Reflection {
 	}
 	
 	public static void init() {
-		ForwardRule.forwardRules.add(AndE1.class);
-		ForwardRule.forwardRules.add(AndE2.class);
-		ForwardRule.forwardRules.add(ImpliesE.class);
+		ForwardRule.register(AndE1.class);
+		ForwardRule.register(AndE2.class);
+		ForwardRule.register(ImpliesE.class);
 		
 		BackwardRule.register(ImpliesI.class);
 		BackwardRule.register(OrI1.class);
+		BackwardRule.register(OrI2.class);
+		BackwardRule.register(AndI.class);
+		//BackwardRule.register(Direct.class);
 	}
 	
 	public static Goal applyBackwards(Class<?extends Deduction> rule, Formula f, Theorem t) {
 		try {
-			return (Goal) rule.getMethod("applyBackwards", Formula.class, Theorem.class).invoke(null,  f, t);
+			return (Goal) rule.getMethod("applyBackwards", Formula.class, Theorem.class).invoke(null, f, t);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

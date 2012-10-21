@@ -1,37 +1,46 @@
 package naturalDeduction;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import syntax.Formula;
 
 public abstract class Deduction {
-	public Formula formula;
-	public final ArrayList<Formula> froms = new ArrayList<Formula>();
-	public final ArrayList<Proof> fromProofs = new ArrayList<Proof>();
-	protected Boolean correct = false;	// Has all of its requisite 'from' fields filled in, and you can infact derive this from those.
-	protected Boolean complete = false;	// All deductions in this deduction's chain are correct, and there are no loops.
-		
-	public Deduction(Formula formula, ArrayList<Formula> froms) {
-		this(formula);
-		this.froms.clear();
-		this.froms.addAll(froms);
+	public Formula consequent;
+	private final ArrayList<Formula> premises = new ArrayList<Formula>();
+	public Proof proofPremise;
+	public Integer lineNumber;
+	
+	public Deduction(Formula consequent) {
+		this.consequent = consequent;
+		this.consequent.from = this;
 	}
 	
-	public Deduction(Formula formula, Formula from) {
-		this(formula);
-		this.froms.add(from);
+	public Deduction(Formula consequent, List<Formula> premises) {
+		this(consequent);
+		this.premises.addAll(premises);
 	}
 	
-	public Deduction(Formula formula) {
-		this.formula = formula;
+	public void addPremise(Formula f) {
+		premises.add(f);
 	}
 	
-	public Deduction(Formula formula, Proof p) {
-		this(formula);
-		fromProofs.add(p);
+	@SuppressWarnings("unchecked")
+	public List<Formula> getPremises() {
+		return (List<Formula>) premises.clone();
+	}
+	
+	public Deduction(Formula consequent, Proof premise) {
+		this(consequent);
+		this.proofPremise = premise;
 	}
 	
 	public static Boolean hasCheck() {
 		return false;
+	}
+	
+	public String toString() {
+		//TODO: Include Rule;
+		return consequent.toString();
 	}
 }

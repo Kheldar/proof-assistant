@@ -1,18 +1,27 @@
 package naturalDeduction;
 
+import java.util.List;
+
+import syntax.And;
 import syntax.Formula;
 
 public class AndE2 extends AndEs {
 	
-	public AndE2(Formula from) throws FormulaMismatch {
-		super(logicalConsequence(from), from);
+	public AndE2(List<Formula> premises) throws BadPremises {
+		super(applyForward(premises), premises);
 	}
 	
-	public static final Formula logicalConsequence(Formula from) throws FormulaMismatch {
-		if(formulaClass.isInstance(from)) {
-			return formulaClass.cast(from).right();
+	public static Formula applyForward(List<Formula> premises) throws BadPremises {
+		if(premises.size() != 1) {
+			throw new BadPremises();
 		} else {
-			throw new FormulaMismatch();
+			Formula premise = premises.get(0);
+			if (!premise.getClass().equals(formulaClass())){
+				throw new BadPremises();
+			} else {
+				And a = (And) premise;
+				return a.right();
+			}
 		}
 	}
 }

@@ -7,13 +7,16 @@ public class ImpliesI extends BackwardRule {
 	
 	protected static final Class<Implies> formulaClass = Implies.class;
 	
-	public ImpliesI(Proof p) {
-		super(logicalConsequence(p), p);
+	public ImpliesI(Proof premise) throws BadPremises {
+		super(applyForwards(premise), premise);
 	}
 	
-	public static final Formula logicalConsequence(Proof p) {
-		//TODO: Check that 'p' is a leaf-node in the deduction chain 'pToQ'.
-		return new Implies(p.assumption.formula, p.endGoal);
+	public static Formula applyForwards(Proof premise) throws BadPremises {
+		if(premise.proven) {
+			return new Implies(premise.assumption.consequent, premise.endGoal);
+		} else {
+			throw new BadPremises();
+		}
 	}
 	
 	public static Class<? extends LogicalSymbol> formulaClass() {
