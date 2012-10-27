@@ -5,23 +5,44 @@ import java.util.List;
 import naturalDeduction.BackwardRule.Goal;
 import naturalDeduction.Deduction;
 
-public abstract class Formula implements Comparable<Formula> {
-	//TODO: Implement 'equals()'
+public abstract class Formula implements Comparable<Formula>, Cloneable {
 	
-	public abstract int compareTo(Formula o);
-	
-	public Deduction from = null;
+	protected Deduction from = null;
 	public ArrayList<Goal> possibleGoals = new ArrayList<Goal>();
+	
+	public void setFrom(Deduction from) {
+		this.from = from;
+	}
+	
+	public Deduction getFrom() {
+		return from;
+	}
 	
 	public List<Deduction> deductionList() {
 		List<Deduction> ds = new ArrayList<Deduction>();
 		if(from != null) {
 			ds.add(from);
-//			System.err.println(from.getPremises());
 			for(Formula premise : from.getPremises()) {
 				ds.addAll(premise.deductionList());
 			}
 		}
 		return ds;
+	}
+	
+	public int compareTo(Formula o) {
+		if(this.classWeight() - o.classWeight() != 0)
+			return this.classWeight() - o.classWeight();
+		else {
+			Double complexity = this.weight() - o.weight(); 
+			return complexity.intValue();
+		}
+	}
+	
+	public abstract Double weight();
+	
+	public abstract int classWeight();
+	
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 }

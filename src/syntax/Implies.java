@@ -7,8 +7,8 @@ public class Implies extends BinaryConnective {
 	}
 	
 	@Override
-	public int compareTo(Formula o) {
-		return 4;
+	public int classWeight() {
+		return 5;
 	}
 	
 	public String toString() {

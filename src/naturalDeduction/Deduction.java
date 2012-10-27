@@ -13,7 +13,6 @@ public abstract class Deduction {
 	
 	public Deduction(Formula consequent) {
 		this.consequent = consequent;
-		this.consequent.from = this;
 	}
 	
 	public Deduction(Formula consequent, List<Formula> premises) {

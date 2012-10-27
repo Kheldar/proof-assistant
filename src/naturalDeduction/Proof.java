@@ -1,8 +1,7 @@
 package naturalDeduction;
 
-import java.util.Collection;
-
 import syntax.Formula;
+import tools.SpecHashSet;
 
 
 public class Proof extends Theorem {
@@ -37,8 +36,8 @@ public class Proof extends Theorem {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Collection<Formula> getKnowledge() {
-		Collection<Formula> c = (Collection<Formula>) known.clone();
+	public SpecHashSet getKnowledge() {
+		SpecHashSet c = (SpecHashSet) known.clone();
 		c.addAll(parent.getKnowledge());
 		return c;
 	}

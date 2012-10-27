@@ -1,24 +1,33 @@
 package naturalDeduction;
 
-import java.util.ArrayList;
-
+import syntax.False;
 import syntax.Formula;
+import syntax.Implies;
+import syntax.LogicalSymbol;
 import syntax.Not;
 
-public class NotI extends Deduction {
+public class NotI extends BackwardRule {
 	
-	public NotI(Formula p, Formula pToNeg) {
-		super(logicalConsequence(p, pToNeg), fromToList(pToNeg));
+	protected static final Class<Not> formulaClass = Not.class;
+	
+	public NotI(Formula consequent) {
+		super(consequent);
 	}
 	
-	public static final Formula logicalConsequence(Formula p, Formula pToNeg) {
-		//TODO: Check pToNeg is correct.
-		return new Not(p);
+	public static Goal applyBackwards(Formula conclusion, Theorem t) throws FormulaMismatch {
+		if(formulaClass.isInstance(conclusion)) {
+			Not n = (Not) conclusion;
+			Goal g = new Goal();
+			g.rule = NotI.class;
+			g.directGoals.add(new Implies(n.subFormula(), new False()));
+			return g;
+		} else {
+			throw new FormulaMismatch();
+		}
 	}
 	
-	private static ArrayList<Formula> fromToList(Formula pToNeg) {
-		ArrayList<Formula> list = new ArrayList<Formula>();
-		list.add(pToNeg);
-		return list;
+	public static final Class<? extends LogicalSymbol> formulaClass() {
+		return formulaClass;
 	}
+	
 }

@@ -1,36 +1,35 @@
 package syntax;
 
-import java.util.Collection;
-import java.util.ArrayList;
-
 public class Predicate extends Formula {
-	final Integer nary;
+	final Integer nary = 0;
 	
-	final ArrayList<Term> terms;
+	public String id = "";
+	public Integer idNo;
 	
-	String id = "";
-	Integer idNo;
+	public Double weight(){
+		return 0.0;
+	}
 	
 	static Integer classIDs = 0;
-	{
-		idNo = classIDs;
-		classIDs = classIDs + 1;
-	}
-	
-	public Predicate(Collection<Term> terms) {
-		this.nary = terms.size();
-		this.terms = new ArrayList<Term>(this.nary);
-		this.terms.addAll(terms);
-	}
-	
-	public Predicate() {
-		this.nary = 0;
-		this.terms = null;
-	}
 	
 	public Predicate(String id) {
 		this();
 		this.id = id;
+	}
+	
+	public Predicate() {
+		idNo = classIDs;
+		classIDs = classIDs + 1;
+	}
+	
+	public boolean equals(Object o) {
+		if(o.getClass().equals(Predicate.class)) {
+			Predicate p = (Predicate) o;
+			return this.idNo == p.idNo;
+		}
+		
+		return false;
+		
 	}
 	
 	public String toString() {
@@ -42,8 +41,8 @@ public class Predicate extends Formula {
 	}
 	
 	@Override
-	public int compareTo(Formula o) {
+	public int classWeight() {
 		// TODO Auto-generated method stub
-		return 3;
+		return 4;
 	}
 }

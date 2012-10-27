@@ -6,8 +6,7 @@ public class And extends BinaryConnective {
 		super(left, right);
 	}
 	
-	@Override
-	public int compareTo(Formula o) {
+	public int classWeight() {
 		return 0;
 	}
 	

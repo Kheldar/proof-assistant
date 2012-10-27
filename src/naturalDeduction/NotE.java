@@ -1,44 +1,57 @@
 package naturalDeduction;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+import syntax.False;
 import syntax.Formula;
+import syntax.LogicalSymbol;
 import syntax.Not;
 
-//Should be:
-//[~p] .. F | p
-public class NotE extends Deduction {
+public class NotE extends ForwardRule {
 	
 	protected static final Class<Not> formulaClass = Not.class;
 	
-	public NotE(Formula notP) throws FormulaMismatch  {
-		super(logicalConsequence(notP), fromToList(notP));
+	public NotE(List<Formula> premises) throws BadPremises  {
+		super(applyForward(premises), premises);
 	}
 	
-	public static final Formula logicalConsequence(Formula notP) throws FormulaMismatch {
-		if(NotE.checkType(notP)) {
-			Not notnot = formulaClass.cast(notP);
-			Not not = (Not) notnot.subFormula();
-			return not.subFormula();
+	public static Boolean hasCheck() {
+		return true;
+	}
+	
+	public static final Formula check(Collection<Formula> proofs, Formula toCheck) {
+		Not n = (Not) toCheck;
+		if(proofs.contains(n.subFormula()))
+			return n.subFormula();
+		return null;
+	}
+	
+	public static Formula applyForward(List<Formula> premises) throws BadPremises {
+		if(premises.size() != 2) {
+			throw new BadPremises();
 		} else {
-			throw new FormulaMismatch();
+			Formula p1 = premises.get(0);
+			Formula p2 = premises.get(1);
+			Not not;
+			Formula norm;
+			if (p1.getClass().equals(Not.class)) {
+				not = (Not) p1;
+				norm = p2;
+			} else if(p2.getClass().equals(Not.class)) {
+				not = (Not) p2;
+				norm = p1;
+			} else
+				throw new BadPremises();
+			
+			if(not.subFormula().equals(norm))
+				return new False();
+			else
+				throw new BadPremises();
 		}
 	}
 	
-	private static Boolean checkType(Formula nnP) {
-		if(formulaClass.isInstance(nnP)) {
-			Not not = formulaClass.cast(nnP);
-			if(formulaClass.isInstance(not.subFormula())) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	private static ArrayList<Formula> fromToList(Formula notPToNeg) {
-		ArrayList<Formula> list = new ArrayList<Formula>();
-		list.add(notPToNeg);
-		return list;
+	public static final Class<? extends LogicalSymbol> formulaClass() {
+		return formulaClass;
 	}
 }

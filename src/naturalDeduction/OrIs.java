@@ -19,12 +19,6 @@ public abstract class OrIs extends BackwardRule {
 		super(consequence);
 	}
 	
-	protected static ArrayList<Formula> fromToList(Formula from) {
-		ArrayList<Formula> list = new ArrayList<Formula>();
-		list.add(from);
-		return list;
-	}
-	
 	public static final Class<? extends LogicalSymbol> formulaClass() {
 		return formulaClass;
 	}

@@ -2,7 +2,7 @@ package tools;
 
 import java.util.ArrayList;
 
-public class RemoveListDuplicates {
+public class ListOperations {
 	
 	public static ArrayList<?> removeDuplicates(ArrayList<?> list) {
 		ArrayList<Object> temp = new ArrayList<Object>();

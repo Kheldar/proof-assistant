@@ -16,8 +16,25 @@ public class Not extends Connective {
 	}
 	
 	@Override
-	public int compareTo(Formula o) {
-		// TODO Auto-generated method stub
-		return 5;
+	public int classWeight() {
+		return 3;
+	}
+	
+	public Double weight() {
+		return 1.0 + subFormula().weight();
+	}
+	
+	public String toString() {
+		return "(NOT " + subFormula().toString() + ")";
+	}
+	
+	public boolean equals(Object o) {
+		if(super.equals(o))
+			return true;
+		else if(this.getClass().equals(o.getClass())) {
+			Not n = (Not) o;
+			return subFormula().equals(n.subFormula());
+		}
+		return false;
 	}
 }

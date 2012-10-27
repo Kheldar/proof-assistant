@@ -16,6 +16,7 @@ public class ImpliesE extends ForwardRule {
 	
 	public static Formula applyForward(List<Formula> premises) throws BadPremises {
 		if(premises.size() != 2) {
+			System.out.println(premises);
 			throw new BadPremises();
 		} else {
 			Formula a = premises.get(0);

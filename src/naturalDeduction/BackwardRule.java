@@ -1,14 +1,13 @@
 package naturalDeduction;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import syntax.Formula;
 
 public abstract class BackwardRule extends Deduction {
 	
-	protected static Set<Class<? extends BackwardRule>> backwardRules = new HashSet<Class<? extends BackwardRule>>();
+	protected static List<Class<? extends BackwardRule>> backwardRules = new ArrayList<Class<? extends BackwardRule>>();
 	
 	public Goal newGoals = new Goal(); 
 	
@@ -21,12 +20,16 @@ public abstract class BackwardRule extends Deduction {
 	}
 	
 	// Would be better if we could do this reflectively.
-	public static final Set<Class<? extends BackwardRule>> backwardRules() {
+	public static final List<Class<? extends BackwardRule>> backwardRules() {
 		return backwardRules;
 	}
 	
 	public static void register(Class<? extends BackwardRule> rule) {
 		backwardRules.add(rule);
+	}
+	
+	public static Boolean manyGoals() {
+		return false;
 	}
 	
 	/**

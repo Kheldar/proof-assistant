@@ -8,7 +8,7 @@ public class Or extends BinaryConnective {
 	}
 	
 	@Override
-	public int compareTo(Formula o) {
+	public int classWeight() {
 		// TODO Auto-generated method stub
 		return 2;
 	}
