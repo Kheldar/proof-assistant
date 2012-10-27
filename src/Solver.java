@@ -15,7 +15,8 @@ public class Solver {
 //		System.out.println("6: " + testCase6());
 //		System.out.println("7: " + testCase7());
 //		System.out.println("9: " + testCase9());
-		System.out.println("10: " + testCase10());
+//		System.out.println("10: " + testCase10());
+		System.out.println("11: " + testCase11());
 	}
 	
 	public static Formula testCase4() {
@@ -142,6 +143,19 @@ public class Solver {
 		Predicate q = new Predicate("Q");
 		
 		Formula a = new Implies(p, new Implies(new Not(p), new Not(q)));
+		
+		Theorem t = new Theorem(a);
+		t.run();
+		System.out.println(t);
+        System.out.println(t.constructProof());
+
+		return t.proven;
+	}
+	
+	public static boolean testCase11() {
+		Predicate p = new Predicate("P");
+		
+		Formula a = new Implies(new False(), p);
 		
 		Theorem t = new Theorem(a);
 		t.run();

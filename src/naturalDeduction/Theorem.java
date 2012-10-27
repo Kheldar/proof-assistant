@@ -219,6 +219,7 @@ public class Theorem {
 	public void newGoal(Formula current) {
 		for(Class<? extends BackwardRule> rule : BackwardRule.backwardRules()) {
 			try {
+				System.err.println(rule);
 				if(Reflection.formulaClass(rule).equals(current.getClass()) 
 						|| Reflection.formulaClass(rule).equals(Formula.class)) {
 					
@@ -226,6 +227,9 @@ public class Theorem {
 					if(Reflection.hasCheck(rule)) {
 						chk = Reflection.check(rule, current, getKnowledge());
 					}
+					
+					System.err.println("\t" + current);
+					
 					
 					if(!Reflection.hasCheck(rule) || chk != null) {
 						if(Reflection.manyGoals(rule)) {

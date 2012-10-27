@@ -9,6 +9,8 @@ import syntax.Not;
 
 public class ClassicalContradiction extends BackwardRule {
 
+	protected static final Class<Formula> formulaClass = Formula.class;
+	
 	public ClassicalContradiction(Formula consequence) {
 		super(consequence);
 	}
@@ -26,7 +28,12 @@ public class ClassicalContradiction extends BackwardRule {
 	
 	public static Goal applyBackwards(Formula conclusion, Theorem t) {
 		Goal g = new Goal();
+		g.rule = ClassicalContradiction.class;
 		g.directGoals.add(new Implies(new Not(conclusion), new False()));
 		return g;
+	}
+	
+	public static final Class<? extends Formula> formulaClass() {
+		return formulaClass;
 	}
 }

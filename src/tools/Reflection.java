@@ -9,6 +9,7 @@ import naturalDeduction.AndE2;
 import naturalDeduction.AndI;
 import naturalDeduction.BackwardRule;
 import naturalDeduction.BackwardRule.Goal;
+import naturalDeduction.ClassicalContradiction;
 import naturalDeduction.Deduction;
 import naturalDeduction.ForwardRule;
 import naturalDeduction.ImpliesE;
@@ -71,6 +72,7 @@ public class Reflection {
 		BackwardRule.register(OrI2.class);
 		BackwardRule.register(OrE.class);
 		BackwardRule.register(NotI.class);
+		BackwardRule.register(ClassicalContradiction.class);
 		//BackwardRule.register(Direct.class);
 	}
 	
