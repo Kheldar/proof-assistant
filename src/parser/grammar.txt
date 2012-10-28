@@ -1,0 +1,18 @@
+Formula		= Predicate {moveUpPred}
+			/ False {fls}
+			/ "(" Formula Space BinaryCon Space Formula ")" {binaryFormula}
+			/ Not Formula {notFormula};
+BinaryCon	= And {and}
+			/ Or {or}
+			/ Implies {implies};
+And 		= "&" ;
+Or 			= "|" ;
+Implies 	= ">" ;
+Not 		= "!";
+Predicate	= letter [0-9]* {predicate};
+letter		= lowerCase
+			/ upperCase;
+lowerCase   = [a-z] ;
+upperCase	= [A-Z] ;
+Space		= " " ;
+False		= "FALSE" ;

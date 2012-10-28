@@ -1,6 +1,8 @@
+import mouse.runtime.SourceString;
 import naturalDeduction.*;
 import syntax.*;
 import tools.Reflection;
+import parser.*;
 
 public class Solver {
 
@@ -10,23 +12,13 @@ public class Solver {
 	public static void main(String[] args) {
 		Reflection.init();
 		
-//		System.out.println("2: " + testCase2());
-//		System.out.println("3: " + testCase3());
-//		System.out.println("6: " + testCase6());
-//		System.out.println("7: " + testCase7());
-//		System.out.println("9: " + testCase9());
-//		System.out.println("10: " + testCase10());
-		System.out.println("11: " + testCase11());
-	}
-	
-	public static Formula testCase4() {
-		Predicate p = new Predicate();
-		Predicate q = new Predicate();
-				
-		Formula a = new Implies(p,q);
-		Formula b = new And(p,a);
-				
-		return b;
+		FormulaParser p = new FormulaParser();
+		p.parse(new SourceString(args[0]));
+		System.out.println(p.rhs(0).get());
+		Theorem t = new Theorem((Formula) p.rhs(0).get());
+		t.run();
+		System.out.println(t.constructProof());
+		System.out.println(t.proven);
 	}
 	
 	public static Formula testCase5() {

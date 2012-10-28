@@ -25,7 +25,7 @@ public class Predicate extends Formula {
 	public boolean equals(Object o) {
 		if(o.getClass().equals(Predicate.class)) {
 			Predicate p = (Predicate) o;
-			return this.idNo == p.idNo;
+			return this.idNo == p.idNo || this.id.equals(p.id);
 		}
 		
 		return false;
