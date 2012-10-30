@@ -47,7 +47,7 @@ public class Theorem {
 		Formula f = d.consequent;
 		
 //		System.err.println(d);
-		if(f.equals(endGoal)) {		
+		if(f.equals(endGoal)) {
 			addKnowledge(d);
 			proven = true;
 			//Need to set this to a formula we've been working with, so we can backtrack.
@@ -62,6 +62,13 @@ public class Theorem {
 	
 	protected void addKnowledge(Deduction d) {
 		known.add(d.consequent);
+		if(d.consequent.getFrom() != null) {
+			try {
+				d.consequent = (Formula) d.consequent.clone();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		d.consequent.setFrom(d);
 	}
 	
@@ -97,7 +104,7 @@ public class Theorem {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected String constructProof(Integer level, Integer[] lineNo) {		
+	protected String constructProof(Integer level, Integer[] lineNo) {
 		StringBuffer s = new StringBuffer();
 		ArrayList<Deduction> ds = new ArrayList<Deduction>();
 		ds.addAll(endGoal.deductionList());
@@ -140,11 +147,6 @@ public class Theorem {
 			Deduction d = new Direct(endGoal);
 			add(d);
 		}
-		
-		//Sometimes need to slow it down for debugging.
-//		try {
-//			Thread.sleep(100);
-//		} catch (Exception e) {}
 		
 		if(!proven) {
 			forward();

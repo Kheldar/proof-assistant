@@ -45,6 +45,7 @@ public abstract class Formula implements Comparable<Formula>, Cloneable {
 	public Object clone() throws CloneNotSupportedException {
 		Formula f = (Formula) super.clone();
 		f.possibleGoals = new ArrayList<Goal>();
+		f.from = null;
 		return f;
 	}
 }

@@ -18,21 +18,20 @@ public class Solver {
 		Theorem t = new Theorem((Formula) p.rhs(0).get());
 		t.run();
 		System.out.println(t.constructProof());
-//		System.out.println(t);
 		System.out.println(t.proven);
-	}
-	
-	public static Formula testCase5() {
-		Predicate p = new Predicate("P");
-		Predicate q = new Predicate("Q");
-				
 		
-		Formula a = new Or(p,q);
-		Formula b = new Implies(p,a);
-		return b;
+		
+//		System.err.println("2: " + testCase2());
+//		System.err.println("3: " + testCase3());
+//		System.err.println("6: " + testCase6());
+//		System.err.println("7: " + testCase7());
+//		System.err.println("8: " + testCase8());
+//		System.err.println("9: " + testCase9());
+//		System.err.println("10: " + testCase10());
+//		System.err.println("11: " + testCase11());
 	}
 	
-	public static Boolean testCase2() {
+	public static boolean testCase2() {
 		Predicate p = new Predicate("P");
 		Predicate q = new Predicate("Q");
 		
@@ -47,7 +46,7 @@ public class Solver {
 		return t.proven;
 	}
 	
-	public static Boolean testCase3() {
+	public static boolean testCase3() {
 		Predicate p = new Predicate();
 		Predicate q = new Predicate();
 		Predicate r = new Predicate();
