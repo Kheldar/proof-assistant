@@ -64,7 +64,6 @@ public class Reflection {
 		ForwardRule.register(AndE1.class);
 		ForwardRule.register(AndE2.class);
 		ForwardRule.register(ImpliesE.class);
-		ForwardRule.register(NotE.class);
 		
 		BackwardRule.register(ImpliesI.class);
 		BackwardRule.register(AndI.class);
@@ -73,7 +72,7 @@ public class Reflection {
 		BackwardRule.register(OrE.class);
 		BackwardRule.register(NotI.class);
 		BackwardRule.register(ClassicalContradiction.class);
-		//BackwardRule.register(Direct.class);
+		BackwardRule.register(NotE.class);
 	}
 	
 	public static Goal applyBackwards(Class<?extends Deduction> rule, Formula f, Theorem t) {

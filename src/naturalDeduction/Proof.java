@@ -10,7 +10,6 @@ public class Proof extends Theorem {
 	public Proof(Formula toProve, Assumption a, Theorem parent) {
 		super(toProve, a);
 		this.parent = parent;
-		parent.subproofs.add(this);
 	}
 	
 	public Theorem getParent() {
@@ -29,6 +28,10 @@ public class Proof extends Theorem {
 			}
 		}
 		return s;
+	}
+	
+	protected String context() {
+		return parent.context() + " --> " + assumption.toString();
 	}
 	
 	protected Integer depth() {

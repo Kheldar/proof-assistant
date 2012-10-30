@@ -17,16 +17,18 @@ public class OrE extends BackwardRule {
 	
 	public static List<Goal> applyBackwards(Formula conclusion, Theorem t) {
 		ArrayList<Goal> list = new ArrayList<Goal>();
-		for(Formula k : t.getKnowledge()) {
-			if(Or.class.isInstance(k)) {
-				Or f = (Or) k; 
-				if(!(t.inKnowledge(f.left()) || t.inKnowledge(f.right()))) {
-					Goal g = new Goal();
-					g.rule = OrE.class;
-					g.directGoals.add(k);
-					g.directGoals.add(new Implies(f.left(), conclusion));
-					g.directGoals.add(new Implies(f.right(), conclusion));
-					list.add(g);
+		if(!conclusion.getClass().equals(Implies.class)) {
+			for(Formula k : t.getKnowledge()) {
+				if(Or.class.isInstance(k)) {
+					Or f = (Or) k; 
+					if(!(t.inKnowledge(f.left()) || t.inKnowledge(f.right()))) {
+						Goal g = new Goal();
+						g.rule = OrE.class;
+						g.directGoals.add(k);
+						g.directGoals.add(new Implies(f.left(), conclusion));
+						g.directGoals.add(new Implies(f.right(), conclusion));
+						list.add(g);
+					}
 				}
 			}
 		}

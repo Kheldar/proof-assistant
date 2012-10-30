@@ -18,6 +18,7 @@ public class Solver {
 		Theorem t = new Theorem((Formula) p.rhs(0).get());
 		t.run();
 		System.out.println(t.constructProof());
+//		System.out.println(t);
 		System.out.println(t.proven);
 	}
 	

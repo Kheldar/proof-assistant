@@ -1,57 +1,43 @@
 package naturalDeduction;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 import syntax.False;
 import syntax.Formula;
-import syntax.LogicalSymbol;
+import syntax.Implies;
 import syntax.Not;
 
-public class NotE extends ForwardRule {
+public class NotE extends BackwardRule {
 	
-	protected static final Class<Not> formulaClass = Not.class;
+	protected static final Class<False> formulaClass = False.class;
 	
-	public NotE(List<Formula> premises) throws BadPremises  {
-		super(applyForward(premises), premises);
+	public NotE(Formula conclucsion) throws BadPremises  {
+		super(conclucsion);
 	}
 	
-	public static Boolean hasCheck() {
+	public static Boolean manyGoals() {
 		return true;
 	}
 	
-	public static final Formula check(Collection<Formula> proofs, Formula toCheck) {
-		Not n = (Not) toCheck;
-		if(proofs.contains(n.subFormula()))
-			return n.subFormula();
-		return null;
-	}
-	
-	public static Formula applyForward(List<Formula> premises) throws BadPremises {
-		if(premises.size() != 2) {
-			throw new BadPremises();
-		} else {
-			Formula p1 = premises.get(0);
-			Formula p2 = premises.get(1);
-			Not not;
-			Formula norm;
-			if (p1.getClass().equals(Not.class)) {
-				not = (Not) p1;
-				norm = p2;
-			} else if(p2.getClass().equals(Not.class)) {
-				not = (Not) p2;
-				norm = p1;
-			} else
-				throw new BadPremises();
-			
-			if(not.subFormula().equals(norm))
-				return new False();
-			else
-				throw new BadPremises();
+	public static List<Goal> applyBackwards(Formula conclusion, Theorem t) {
+		ArrayList<Goal> list = new ArrayList<Goal>();
+		if(!conclusion.getClass().equals(Implies.class)) {
+			for(Formula f : t.getKnowledge()) {
+				if(f.getClass().equals(Not.class)) {
+					Not n = (Not) f;
+					Goal g = new Goal();
+					g.rule = NotE.class;
+					g.directGoals.add(n.subFormula());
+					list.add(g);
+				}
+			}
 		}
+		
+		return list;
 	}
 	
-	public static final Class<? extends LogicalSymbol> formulaClass() {
+	public static final Class<? extends Formula> formulaClass() {
 		return formulaClass;
 	}
 }

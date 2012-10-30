@@ -20,7 +20,7 @@ public class ClassicalContradiction extends BackwardRule {
 	}
 	
 	public static final Formula check(Collection<Formula> proofs, Formula toCheck) {
-		if(toCheck.getClass().equals(False.class))
+		if(toCheck.getClass().equals(False.class) || toCheck.getClass().equals(Implies.class))
 			return null;
 		else
 			return toCheck;

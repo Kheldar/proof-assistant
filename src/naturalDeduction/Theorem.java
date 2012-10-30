@@ -18,7 +18,7 @@ import tools.SpecHashSet;
 public class Theorem {
 
 	public Assumption assumption;
-	protected SpecHashSet known = new SpecHashSet();
+	public SpecHashSet known = new SpecHashSet();
 	public ArrayList<Proof> subproofs = new ArrayList<Proof>();
 	public PriorityQueue<Formula> goals = new PriorityQueue<Formula>();
 	public LinkedList<Formula> incompleteGoals = new LinkedList<Formula>();
@@ -46,7 +46,6 @@ public class Theorem {
 	public void add(Deduction d) {
 		Formula f = d.consequent;
 		
-//		System.err.println("Context: " + assumption + " ---> " + endGoal);
 //		System.err.println(d);
 		if(f.equals(endGoal)) {		
 			addKnowledge(d);
@@ -98,7 +97,7 @@ public class Theorem {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected String constructProof(Integer level, Integer[] lineNo) {
+	protected String constructProof(Integer level, Integer[] lineNo) {		
 		StringBuffer s = new StringBuffer();
 		ArrayList<Deduction> ds = new ArrayList<Deduction>();
 		ds.addAll(endGoal.deductionList());
@@ -137,16 +136,15 @@ public class Theorem {
 	}
 	
 	public void run() {
-		try {
-			Thread.sleep(100);
-		} catch (Exception e) {
-			
-		}
-		
 		if(inKnowledge(endGoal) && (endGoal.getFrom() == null || endGoal.getFrom().getPremises().isEmpty())) {
 			Deduction d = new Direct(endGoal);
 			add(d);
 		}
+		
+		//Sometimes need to slow it down for debugging.
+//		try {
+//			Thread.sleep(100);
+//		} catch (Exception e) {}
 		
 		if(!proven) {
 			forward();
@@ -154,10 +152,19 @@ public class Theorem {
 		}
 	}
 	
+	protected String context() {
+		if(assumption == null) {
+			return "null";
+		}
+		return assumption.toString();
+	}
+	
 	public void forward() {
+		//Need to pull knowledge out into a new structure, so we don't get
+		//Concurrent modification errors.
+		//Do not use this in a concurrent context.
 		ArrayList<Formula> tempK = new ArrayList<Formula>(getKnowledge());
 		
-		//This is HORRIBLY unsafe. Do not use in a concurrent setting.
 		int i = 0;
 		while(i < tempK.size()) {
 			Formula proven = tempK.get(i);
@@ -177,8 +184,6 @@ public class Theorem {
 		//TODO: Add check to see if we already have the goal.
 		while(!proven && !goals.isEmpty()) {
 			Formula f = goals.poll();
-//			System.err.println("Context: " + assumption + " ---> " + endGoal);
-//			System.err.println(f);
 			newGoal(f);
 			if(needsForward) {
 				forward();
@@ -189,6 +194,7 @@ public class Theorem {
 	public Boolean handleSingleGoal(Goal g, Class<? extends BackwardRule> rule, Formula current) throws InstantiationException, 
 		IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		Boolean b;
+				
 		if(b = inKnowledge(g.directGoals)) {
 			BackwardRule deduction = rule.getConstructor(Formula.class).newInstance(current);
 			//Need to go through and get the formulas from IN knowledge (not enough that they're equal),
@@ -203,10 +209,16 @@ public class Theorem {
 				}
 			}
 			add(deduction);
-		} else {
-			for(Formula f : g.directGoals) {
-				if(!inKnowledge(f) && !goals.contains(f)) {
-					goals.add(f);
+		} else {			
+			if(!loopDetection(g.directGoals)) {
+				for(Formula f : g.directGoals) {
+					if(!inKnowledge(f) && !goals.contains(f)) {
+						try{
+							goals.add((Formula) f.clone());
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 			current.possibleGoals.add(g);
@@ -214,6 +226,23 @@ public class Theorem {
 		}
 		
 		return b;
+	}
+	
+	protected boolean loopDetection(List<Formula> goals) {
+		for(Formula f : goals) {
+			if(f.getClass().equals(Implies.class)) {
+				Implies i = (Implies) f;
+				if(
+						inKnowledge(i.left()) && (
+							goals.contains(i.right()) ||
+							incompleteGoals.contains(i.right())	
+						)
+				  )
+					return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public void newGoal(Formula current) {
@@ -227,11 +256,10 @@ public class Theorem {
 						chk = Reflection.check(rule, current, getKnowledge());
 					}
 					
-					
 					if(!Reflection.hasCheck(rule) || chk != null) {
 						if(Reflection.manyGoals(rule)) {
 							List<Goal> goals = Reflection.applyManyBackwards(rule, current, this);
-							for(Goal g : goals) {							
+							for(Goal g : goals) {
 								if(handleSingleGoal(g, rule, current))
 									break;
 							}
@@ -243,6 +271,7 @@ public class Theorem {
 							} else if (g.proofGoal != null) {
 								g.proofGoal.run();
 								if(g.proofGoal.proven) {
+									subproofs.add(g.proofGoal);
 									//TODO: Relectivise this.
 									if(Reflection.formulaClass(rule).equals(Implies.class)) {
 										BackwardRule deduction = rule.getConstructor(Proof.class).newInstance(g.proofGoal);
@@ -266,7 +295,7 @@ public class Theorem {
 		Formula f;
 		while(!proven && !incompleteGoals.isEmpty()) {
 			f = incompleteGoals.poll();
-			Boolean clear = false;
+			Boolean clear = false;			
 			for(Goal g : f.possibleGoals) {
 				if(inKnowledge(g.directGoals)) {
 					clear = true;

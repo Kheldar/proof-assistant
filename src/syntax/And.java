@@ -7,7 +7,7 @@ public class And extends BinaryConnective {
 	}
 	
 	public int classWeight() {
-		return 0;
+		return 1;
 	}
 	
 	public String toString() {
