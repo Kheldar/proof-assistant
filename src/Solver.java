@@ -12,6 +12,12 @@ public class Solver {
 	public static void main(String[] args) {
 		Reflection.init();
 		
+		
+//		System.err.println(
+//				String.format("%1$-8d %2$s %3$-70s %4$s", 
+//						1,2,3,4)
+//				);
+		
 		FormulaParser p = new FormulaParser();
 		p.parse(new SourceString(args[0]));
 		System.out.println(p.rhs(0).get());

@@ -40,6 +40,26 @@ public abstract class Deduction {
 	
 	public String toString() {
 		//TODO: Include Rule;
-		return consequent.toString();
+		StringBuffer s = new StringBuffer();
+		s.append(this.getClass().getSimpleName());
+		if(!premises.isEmpty()) {
+			s.append("(");
+			Boolean b = false;
+			for(Formula p : premises) {
+				if(b)
+					s.append(", ");
+				s.append(p.getFrom().lineNumber);
+				b = true;
+			}
+			s.append(")");
+		} else if (proofPremise != null) {
+			s.append("(");
+			s.append(proofPremise.assumption.lineNumber.toString() 
+					+ "-" 
+					+ proofPremise.endGoal.getFrom().lineNumber);
+			s.append(")");
+		}
+		
+		return s.toString();
 	}
 }

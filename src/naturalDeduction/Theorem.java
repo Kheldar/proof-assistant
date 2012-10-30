@@ -119,10 +119,18 @@ public class Theorem {
 				s.append(d.proofPremise.constructProof(level + 1, lineNo));
 			}
 			
+			
+			
 			//Check to see if knowledge is "local"
 			if(known.contains(d.consequent)) {
-				s.append(lineNo[0].toString() + "\t" + repeatString(" |", level + 1));
-				s.append(d.toString() + "\n");
+				d.lineNumber = lineNo[0];
+				String repeat = repeatString(" |", level + 1);
+				s.append(String.format("%1$-8d%2$s %3$-" + (70 - repeat.length()) + "s \t %4$s\n", 
+						lineNo[0]
+						,repeat
+						,d.consequent.toString()
+						,d.toString()
+						));
 				lineNo[0]++;
 			}
 			
