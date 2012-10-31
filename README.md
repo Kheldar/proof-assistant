@@ -1,7 +1,7 @@
 proof-assistant
 ===============
 
-A proof assistant for first-order logic.
+A proof assistant for natural deduction in propositional logic.
 
 
 Compilation
